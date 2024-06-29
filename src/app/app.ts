@@ -1,5 +1,7 @@
 import state from "./state/state";
 import RecipeView from "./views/RecipeView";
+import ResultsView from "./views/ResultsView";
+import SearchView from "./views/SearchView";
 
 const controlRecipes = async () => {
   try {
@@ -22,13 +24,35 @@ const controlRecipes = async () => {
     RecipeView.render(recipe);
   } catch (err) {
     if (err instanceof Error) {
-      console.log(err.message);
+      RecipeView.renderError(RecipeView.parentElement, RecipeView.errorMessage);
     }
   }
 };
 
-["load", "hashchange"].forEach((ev) =>
-  window.addEventListener(ev, (event) => {
-    controlRecipes();
-  })
-);
+const controlSearchResults = async () => {
+  try {
+    ResultsView.renderSpinner();
+
+    const query = SearchView.getQuery();
+
+    if (!query) return;
+
+    await state.loadSearchResults(query);
+
+    ResultsView.render(state.search.results);
+  } catch (err) {
+    if (err instanceof Error) {
+      ResultsView.renderError(
+        ResultsView.parentElement,
+        ResultsView.errorMessage
+      );
+    }
+  }
+};
+
+const init = () => {
+  RecipeView.addHandlerRender(controlRecipes);
+  SearchView.addHandlerSearch(controlSearchResults);
+};
+
+init();

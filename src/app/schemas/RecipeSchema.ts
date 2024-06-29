@@ -17,4 +17,12 @@ export const RecipeSchema = z.object({
   title: z.string(),
 });
 
+export const QueryRecipeSchema = z.object({
+  id: z.string(),
+  image_url: z.string(),
+  publisher: z.string(),
+  title: z.string(),
+});
+
 export type Recipe = z.infer<typeof RecipeSchema>;
+export type QueryRecipe = z.infer<typeof QueryRecipeSchema>;

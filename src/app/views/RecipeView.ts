@@ -2,8 +2,10 @@ import { Recipe } from "../schemas/RecipeSchema";
 import { View } from "./View";
 
 class RecipeView extends View {
-  private parentElement = document.querySelector(".recipe");
+  parentElement = document.querySelector(".recipe");
   private recipe: Recipe | null = null;
+  errorMessage = "We couldn't find that recipe. Please try another one!";
+  message = "";
 
   constructor() {
     super();
@@ -16,6 +18,14 @@ class RecipeView extends View {
     this.clearElementContent(this.parentElement);
 
     this.parentElement?.insertAdjacentHTML("afterbegin", this.generateMarkup());
+  }
+
+  addHandlerRender(handler: () => void) {
+    ["load", "hashchange"].forEach((ev) =>
+      window.addEventListener(ev, () => {
+        handler();
+      })
+    );
   }
 
   private generateMarkup() {
